@@ -5,8 +5,11 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.view.isGone
 import fastcampus.aop.part4.chapter05.databinding.ActivityMainBinding
+import fastcampus.aop.part4.chapter05.utility.AuthTokenProvider
 import fastcampus.aop.part4.chapter05.utility.RetrofitUtil
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -15,7 +18,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
 
     private val TAG = "로그"
 
-    private lateinit var binding : ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
+
+    private val authTokenProvider: AuthTokenProvider by lazy {
+        AuthTokenProvider(this)
+    }
 
     val job: Job = Job()
 
@@ -56,21 +63,47 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
         intent?.data?.getQueryParameter("code")?.let {
             // todo getAccessToken
             launch {
-               getAccessToken(it)
+                showProgress()
+                getAccessToken(it)
+                dismissProgress()
             }
         }
     }
 
-    private suspend fun getAccessToken(code : String) = withContext(Dispatchers.IO) {
+    private suspend fun showProgress() = withContext(coroutineContext) {
+        with(binding) {
+            loginButton.isGone = true
+            progressBar.isGone = false
+            progressTextView.isGone = false
+        }
+    }
+
+    private suspend fun dismissProgress() = withContext(coroutineContext) {
+        with(binding) {
+            loginButton.isGone = false
+            progressBar.isGone = true
+            progressTextView.isGone = true
+        }
+    }
+
+    private suspend fun getAccessToken(code: String) = withContext(Dispatchers.IO) {
         val response = RetrofitUtil.authApiService.getAccessToken(
             clientId = BuildConfig.GITHUB_CLIENT_ID,
             clientSecret = BuildConfig.GITHUB_CLIENT_SECRET,
             code = code
         )
-        
-        if(response.isSuccessful){
+
+        if (response.isSuccessful) {
             val accessToken = response.body()?.accessToken ?: ""
             Log.e(TAG, "getAccessToken: ${accessToken}")
+            if (accessToken.isNotEmpty()) {
+                authTokenProvider.updateToken(accessToken)
+            } else {
+                runOnUiThread {
+                    Toast.makeText(this@MainActivity, "accessToken이 존재하지 않습니다.", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
         }
     }
 }
