@@ -82,7 +82,7 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        Log.e(TAG, "onNewIntent: ")
+        Log.e(TAG, "on  NewIntent: ")
         intent?.data?.getQueryParameter("code")?.let {
             // todo getAccessToken
             launch {
@@ -113,7 +113,7 @@ class SignInActivity : AppCompatActivity(), CoroutineScope {
         val response = RetrofitUtil.authApiService.getAccessToken(
             clientId = BuildConfig.GITHUB_CLIENT_ID,
             clientSecret = BuildConfig.GITHUB_CLIENT_SECRET,
-            code = code
+            code = code,
         )
 
         if (response.isSuccessful) {

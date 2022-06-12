@@ -1,5 +1,6 @@
 package fastcampus.aop.part4.chapter05
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -29,6 +30,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        initViews()
+
         Log.e(TAG, "onCreate: mainactivity", )
         
         launch {
@@ -37,6 +40,14 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
             withContext(coroutineContext){
                 Log.e(TAG, "onCreate: $githubRepositories", )
             }
+        }
+    }
+
+    private fun initViews() = with(binding) {
+        searchButton.setOnClickListener {
+            startActivity(
+                Intent(this@MainActivity, SearchActivity::class.java)
+            )
         }
     }
 
