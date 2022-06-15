@@ -16,7 +16,7 @@ class SearchActivity : AppCompatActivity(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
-    private lateinit var binding : ActivitySearchBinding
+    private lateinit var binding: ActivitySearchBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +24,18 @@ class SearchActivity : AppCompatActivity(), CoroutineScope {
         setContentView(binding.root)
 
 
+    }
+
+    private fun initAdapter() = with(binding) {
 
     }
+
+    private fun initViews() = with(binding) {
+
+    }
+
+    private fun bindViews() = with(binding) {
+
+    }
+
 }

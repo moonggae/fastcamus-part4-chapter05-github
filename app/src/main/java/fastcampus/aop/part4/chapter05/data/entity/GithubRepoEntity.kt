@@ -3,7 +3,6 @@ package fastcampus.aop.part4.chapter05.data.entity
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import org.intellij.lang.annotations.Language
 
 @Entity(tableName = "GithubRepository")
 data class GithubRepoEntity(
